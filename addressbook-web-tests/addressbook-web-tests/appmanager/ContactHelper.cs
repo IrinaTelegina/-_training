@@ -1,28 +1,26 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading;
-using NUnit.Framework;
+using System.Threading.Tasks;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Firefox;
 using OpenQA.Selenium.Support.UI;
 
 namespace WebAdressbookTests
 {
-    [TestFixture]
-    public class ContactsCreationTests : TestBase
+    public class ContactHelper : HelperBase
     {
-        [Test]
-        public void ContactCreationTest()
+        public ContactHelper(ApplicationManager manager) 
+            : base(manager)
         {
-            GoToHomePage();
-            Login(new AccountData("admin", "secret"));
-            CreateContact();
-            NameAndLastname(new ContactData("irina" , "telegina"));
-            ReturnToHomePage();
         }
-
-        private void NameAndLastname(ContactData contact)
+        public ContactHelper CreateContact()
+        {
+            driver.FindElement(By.LinkText("add new")).Click();
+            return this;
+        }
+        public ContactHelper NameAndLastname(ContactData contact)
         {
             driver.FindElement(By.Name("firstname")).Click();
             driver.FindElement(By.Name("firstname")).Clear();
@@ -30,6 +28,7 @@ namespace WebAdressbookTests
             driver.FindElement(By.Name("lastname")).Click();
             driver.FindElement(By.Name("lastname")).Clear();
             driver.FindElement(By.Name("lastname")).SendKeys(contact.Lastname);
+            return this;
         }
     }
 }
