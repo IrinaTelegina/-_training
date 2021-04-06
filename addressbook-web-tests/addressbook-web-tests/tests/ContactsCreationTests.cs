@@ -17,7 +17,8 @@ namespace WebAdressbookTests
         {
             app.Contacts
                 .CreateContact()
-                .NameAndLastname(new ContactData("irina" , "telegina"));
+                .NameAndLastname(new ContactData("irina", "telegina"))
+                .SubmitContact();
             app.Navigator.ReturnToHomePage();
         }
     }

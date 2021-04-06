@@ -30,7 +30,6 @@ namespace WebAdressbookTests
 
         public NavigationHelper ReturnToHomePage()
         {
-            driver.FindElement(By.XPath("(//input[@name='submit'])[2]")).Click();
             driver.FindElement(By.LinkText("home page")).Click();
             return this;
         }
