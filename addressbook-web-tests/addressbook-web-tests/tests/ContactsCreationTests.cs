@@ -7,10 +7,10 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Firefox;
 using OpenQA.Selenium.Support.UI;
 
-namespace WebAdressbookTests
+namespace WebAdressbookTests.tests
 {
     [TestFixture]
-    public class ContactsCreationTests : TestBase
+    public class ContactsCreationTests : AuthTestBase
     {
         [Test]
         public void ContactCreationTest()

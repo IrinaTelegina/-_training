@@ -17,21 +17,27 @@ namespace WebAdressbookTests
         {
             this.baseURL = baseURL;
         }
-        public NavigationHelper GoToHomePage()
+        public void GoToHomePage()
         {
+            if (driver.Url == baseURL)
+            {
+                return;
+            }
             driver.Navigate().GoToUrl(baseURL);
-            return this;
         }
-        public NavigationHelper GoToGroupsPage()
+        public void GoToGroupsPage()
         {
+            if (driver.Url == baseURL + "group.php"
+                && IsElementPresent(By.Name("new")))
+            {
+                return;
+            }
             driver.FindElement(By.LinkText("groups")).Click();
-            return this;
         }
 
-        public NavigationHelper ReturnToHomePage()
+        public void ReturnToHomePage()
         {
             driver.FindElement(By.LinkText("home page")).Click();
-            return this;
         }
     }
 }
