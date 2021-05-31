@@ -11,9 +11,20 @@ namespace WebAdressbookTests.tests
     {
 
         [Test]
-        public void ContactRemovalTest()
+        public void GontactRemovealTest()
         {
-            app.Contacts.RemoveContact(1);
+            if (app.Contacts.AvailabilityOfContacts() == false)
+            {
+                ContactData contact = new ContactData("Irina", "Telegina");
+                app.Contacts.AddNewContact(contact);
+            }
+            List<ContactData> oldContacts = app.Contacts.GetContactsList();
+            app.Contacts.Remove(0);
+            List<ContactData> newContacts = app.Contacts.GetContactsList();
+            oldContacts.RemoveAt(0);
+            oldContacts.Sort();
+            newContacts.Sort();
+            Assert.AreEqual(oldContacts, newContacts);
         }
     }
 }

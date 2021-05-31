@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WebAdressbookTests
 {
-    public class GroupData
+    public class GroupData : IEquatable<GroupData>
     {
         private string name;
         private string header = "";
@@ -15,6 +15,27 @@ namespace WebAdressbookTests
         public GroupData(string name)
         {
             this.name = name;
+        }
+
+        public bool Equals(GroupData other)
+        {
+            if (object.ReferenceEquals(other, null))
+            {
+                return false;
+            }
+            if (object.ReferenceEquals(this, other))
+            {
+                return true;
+            }
+            return Name == other.Name;
+        }
+        public override int GetHashCode()
+        {
+            return Name.GetHashCode();
+        }
+        public override string ToString()
+        {
+            return "name=" + Name;
         }
         public string Name
         {

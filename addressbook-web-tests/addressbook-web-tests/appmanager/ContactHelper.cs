@@ -2,81 +2,141 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Firefox;
 using OpenQA.Selenium.Support.UI;
-
+using System.Threading.Tasks;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Text.RegularExpressions;
 namespace WebAdressbookTests
 {
     public class ContactHelper : HelperBase
     {
-        public ContactHelper(ApplicationManager manager) 
-            : base(manager)
+        private bool acceptNextAlert = true;
+        public ContactHelper(ApplicationManager manager) : base(manager)
         {
         }
-
-        public ContactHelper RemoveContact(int p)
+        public ContactHelper Remove(int v)
         {
-            SelectContact(p);
+            manager.Navigator.GoToHomePage();
+            SelectContact(v);
             RemoveContact();
-           // manager.Navigator.ReturnToHomePage();
             return this;
+        }
+        public List<ContactData> GetContactsList()
+        {
+            List<ContactData> contact = new List<ContactData>();
+            manager.Navigator.GoToHomePage();
+            IList<IWebElement> elements = driver.FindElements(By.CssSelector("tr[name=\"entry\"]"));
+            string firstname;
+            string lastname;
+            foreach (IWebElement element in elements)
+            {
+                IList<IWebElement> cells = element.FindElements(By.CssSelector("td"));
+                lastname = cells[2].Text;
+                firstname = cells[1].Text;
+                contact.Add(new ContactData(lastname, firstname));
+            }
+            return contact;
         }
 
         public ContactHelper RemoveContact()
         {
+
             driver.FindElement(By.XPath("//input[@value='Delete']")).Click();
             driver.SwitchTo().Alert().Accept();
             return this;
         }
-
-        public ContactHelper CreateContact()
-        {
-            driver.FindElement(By.LinkText("add new")).Click();
-            return this;
-        }
-
-        public ContactHelper ModifyContact(ContactData newContact)
+        public ContactHelper Modify(int v, ContactData newData)
         {
             manager.Navigator.GoToHomePage();
-            InitContactModification();
-            NameAndLastname(newContact);
-            SubmitContactModification();
-            manager.Navigator.ReturnToHomePage();
+            EditThisContact(v);
+            FillContactForm(newData);
+            UpdateContact(v);
+            manager.Navigator.GoToHomePage();
             return this;
         }
-
-
-        public ContactHelper NameAndLastname(ContactData contact)
+        public ContactHelper AddNewContact(ContactData contact)
         {
-            Type(By.Name("firstname"), contact.Name);
-            Type(By.Name("lastname"), contact.Lastname);
-            return this;
-        }
-
-        
-        public ContactHelper SubmitContactModification()
-        {
-            driver.FindElement(By.XPath("(//input[@name='update'])[2]")).Click();
-            return this;
-        }
-        public ContactHelper SubmitContact()
-        {
+            driver.FindElement(By.LinkText("add new")).Click();
+            driver.FindElement(By.Name("firstname")).Click();
+            driver.FindElement(By.Name("firstname")).Clear();
+            driver.FindElement(By.Name("firstname")).SendKeys(contact.Firstname);
+            driver.FindElement(By.Name("lastname")).Click();
+            driver.FindElement(By.Name("lastname")).Clear();
+            driver.FindElement(By.Name("lastname")).SendKeys(contact.Lastname);
             driver.FindElement(By.XPath("(//input[@name='submit'])[2]")).Click();
-            return this;
-        }
-
-        public ContactHelper InitContactModification()
-        {
-
-            driver.FindElement(By.XPath("//img[@alt='Edit']")).Click();
             return this;
         }
         public ContactHelper SelectContact(int index)
         {
-            driver.FindElement(By.XPath("(//input[@name='selected[]'])[" + index + "]")).Click();
+            driver.FindElement(By.XPath("(//input[@name='selected[]'])[" + (index + 1) + "]")).Click();
             return this;
+        }
+        public ContactHelper EditThisContact(int index)
+        {
+            driver.FindElement(By.XPath("(//img[@alt='Edit'])[" + (index + 1) + "]")).Click();
+            return this;
+        }
+        public ContactHelper FillContactForm(ContactData contact)
+        {
+            Type(By.Name("firstname"), contact.Firstname);
+            Type(By.Name("lastname"), contact.Lastname);
+            return this;
+        }
+        public ContactHelper UpdateContact(int index)
+        {
+            driver.FindElement(By.XPath("(//input[@name='update'])[" + (index + 1) + "]")).Click();
+            return this;
+        }
+        public bool IsElementPresent(By by)
+        {
+            try
+            {
+                driver.FindElement(by);
+                return true;
+            }
+            catch (NoSuchElementException)
+            {
+                return false;
+            }
+        }
+        public bool IsAlertPresent()
+        {
+            try
+            {
+                driver.SwitchTo().Alert();
+                return true;
+            }
+            catch (NoAlertPresentException)
+            {
+                return false;
+            }
+        }
+        public string CloseAlertAndGetItsText()
+        {
+            try
+            {
+                IAlert alert = driver.SwitchTo().Alert();
+                string alertText = alert.Text;
+                if (acceptNextAlert)
+                {
+                    alert.Accept();
+                }
+                else
+                {
+                    alert.Dismiss();
+                }
+                return alertText;
+            }
+            finally
+            {
+                acceptNextAlert = true;
+            }
+        }
+        public bool AvailabilityOfContacts()
+        {
+            return IsElementPresent(By.Name("entry"));
         }
     }
 }
