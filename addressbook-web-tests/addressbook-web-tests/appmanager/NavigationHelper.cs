@@ -5,8 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Firefox;
+using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
-
 namespace WebAdressbookTests
 {
     public class NavigationHelper : HelperBase
@@ -17,27 +17,23 @@ namespace WebAdressbookTests
         {
             this.baseURL = baseURL;
         }
-        public void GoToHomePage()
+        public void OpenHomePage()
         {
-            if (driver.Url == baseURL)
+            if (driver.Url == baseURL + "/addressbook/")
             {
                 return;
             }
-            driver.Navigate().GoToUrl(baseURL);
+            driver.Navigate().GoToUrl(baseURL + "/addressbook/");
         }
-        public void GoToGroupsPage()
+        public void GoToGroupPage()
         {
-            if (driver.Url == baseURL + "group.php"
+            if (driver.Url == baseURL + "/addressbook/group.php"
                 && IsElementPresent(By.Name("new")))
             {
                 return;
             }
             driver.FindElement(By.LinkText("groups")).Click();
         }
-
-        public void ReturnToHomePage()
-        {
-            driver.FindElement(By.LinkText("home page")).Click();
-        }
     }
+
 }

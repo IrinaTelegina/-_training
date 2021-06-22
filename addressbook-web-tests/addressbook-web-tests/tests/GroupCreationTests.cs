@@ -2,13 +2,10 @@
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
-using NUnit.Framework;
 using System.Collections.Generic;
-using OpenQA.Selenium;
-using OpenQA.Selenium.Firefox;
-using OpenQA.Selenium.Support.UI;
+using NUnit.Framework;
 
-namespace WebAdressbookTests.tests
+namespace WebAdressbookTests
 {
     [TestFixture]
     public class GroupCreationTests : AuthTestBase
@@ -21,47 +18,49 @@ namespace WebAdressbookTests.tests
             group.Footer = "fff";
 
             List<GroupData> oldGroups = app.Groups.GetGroupList();
-
             app.Groups.Create(group);
-            
+
             List<GroupData> newGroups = app.Groups.GetGroupList();
             oldGroups.Add(group);
+            oldGroups.Sort();
+            newGroups.Sort();
             Assert.AreEqual(oldGroups, newGroups);
-
-            app.Auth.Logout();
         }
 
         [Test]
-        public void EmptyGroupCreationTest()
+        public void GroupCreationTestEmpty()
         {
             GroupData group = new GroupData("");
             group.Header = "";
             group.Footer = "";
 
             List<GroupData> oldGroups = app.Groups.GetGroupList();
+
             app.Groups.Create(group);
 
             List<GroupData> newGroups = app.Groups.GetGroupList();
-            Assert.AreEqual(oldGroups.Count + 1, newGroups.Count);
-
-            app.Auth.Logout();
+            oldGroups.Add(group);
+            oldGroups.Sort();
+            newGroups.Sort();
+            Assert.AreEqual(oldGroups, newGroups);
         }
 
         [Test]
-        public void BadNameGroupCreationTest()
+        public void BadNameGroupCreationTestEmpty()
         {
             GroupData group = new GroupData("a'a");
             group.Header = "";
             group.Footer = "";
 
             List<GroupData> oldGroups = app.Groups.GetGroupList();
+
             app.Groups.Create(group);
 
             List<GroupData> newGroups = app.Groups.GetGroupList();
-            Assert.AreEqual(oldGroups.Count + 1, newGroups.Count);
-
-            app.Auth.Logout();
+            oldGroups.Add(group);
+            oldGroups.Sort();
+            newGroups.Sort();
+            Assert.AreEqual(oldGroups, newGroups);
         }
-
     }
 }

@@ -1,28 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Text.RegularExpressions;
+using System.Threading;
 using NUnit.Framework;
-
-namespace WebAdressbookTests.tests
+namespace WebAdressbookTests
 {
+    [TestFixture]
     public class ContactModificationTests : AuthTestBase
     {
         [Test]
         public void ContactModificationTest()
         {
-            if (app.Contacts.AvailabilityOfContacts() == false)
+            int index = 0;
+            PropertiesContact newData = new PropertiesContact("Irina3", "Telegina3");
+            if ((index == 0) && (!app.Contacts.IsExist(index)))
             {
-                ContactData contact = new ContactData("Irina", "Telegina");
-                app.Contacts.AddNewContact(contact);
+                app.Contacts.Create(new PropertiesContact("AutoCreated", "AutoCreated"));
             }
-            ContactData newData = new ContactData("Irina123", "Telegina123");
-            List<ContactData> oldContacts = app.Contacts.GetContactsList();
-            app.Contacts.Modify(0, newData);
-            List<ContactData> newContacts = app.Contacts.GetContactsList();
-            oldContacts[0].Firstname = newData.Firstname;
-            oldContacts[0].Lastname = newData.Lastname;
+
+            //Если правим контакт, которого нет, то тест должен провалиться
+            Assert.IsTrue(app.Contacts.IsExist(index));
+
+            List<PropertiesContact> oldContacts = app.Contacts.GetContactList();
+            app.Contacts.Modify(index, newData);
+
+            List<PropertiesContact> newContacts = app.Contacts.GetContactList();
+
+            oldContacts[index].Firstname = newData.Firstname;
+            oldContacts[index].Lastname = newData.Lastname;
             oldContacts.Sort();
             newContacts.Sort();
             Assert.AreEqual(oldContacts, newContacts);

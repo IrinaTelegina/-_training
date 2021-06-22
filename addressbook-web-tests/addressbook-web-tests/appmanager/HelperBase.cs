@@ -5,9 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Firefox;
+using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
-
-
 namespace WebAdressbookTests
 {
     public class HelperBase
@@ -19,15 +18,14 @@ namespace WebAdressbookTests
             this.manager = manager;
             driver = manager.Driver;
         }
-        public void Type(By locator, string text)
+        public void Tipe(By locator, string text)
         {
             if (text != null)
             {
-                driver.FindElement(locator).Click();
+                //driver.FindElement(locator).Click();
                 driver.FindElement(locator).Clear();
                 driver.FindElement(locator).SendKeys(text);
             }
-
         }
         public bool IsElementPresent(By by)
         {
@@ -41,6 +39,5 @@ namespace WebAdressbookTests
                 return false;
             }
         }
-
     }
 }

@@ -5,88 +5,93 @@ using System.Text;
 using System.Threading.Tasks;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Firefox;
+using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
+using NUnit.Framework;
 namespace WebAdressbookTests
 {
     public class GroupHelper : HelperBase
     {
-        public GroupHelper(ApplicationManager manager) : base(manager)
+        public GroupHelper(ApplicationManager manager)
+            : base(manager)
         {
         }
-        public GroupHelper Create(GroupData group) //метод для создания групп
+        public GroupHelper Create(GroupData group)
         {
-            manager.Navigator.GoToGroupsPage();
-            CreateNewGroup();
+            manager.Navigator.GoToGroupPage();
+            InitNewGroupCreation();
             FillGroupForm(group);
             SubmitGroupCreation();
-            ReturnToGroupsPage();
+            manager.Navigator.GoToGroupPage();
             return this;
         }
+
         public List<GroupData> GetGroupList()
         {
             List<GroupData> groups = new List<GroupData>();
-            manager.Navigator.GoToGroupsPage();
+            manager.Navigator.GoToGroupPage();
             ICollection<IWebElement> elements = driver.FindElements(By.CssSelector("span.group"));
-            foreach (IWebElement element in elements) // для каждого element из elements выполняем
+            foreach (IWebElement element in elements)
             {
+                //GroupData group = new GroupData(element.Text);
                 groups.Add(new GroupData(element.Text));
             }
             return groups;
         }
-        public GroupHelper Modify(int v, GroupData newData)
+
+        public GroupHelper Modify(int index, GroupData newData)
         {
-            manager.Navigator.GoToGroupsPage(); //переход на нужную нам страницу
- 
-            SelectGroup(v);
-            InitGroupModification();
-            FillGroupForm(newData); // заполняем появившуюся форму
+            manager.Navigator.GoToGroupPage();
+            SelectGroup(index);
+            InitNewGroupModification();
+            FillGroupForm(newData);
             SubmitGroupModification();
-            ReturnToGroupsPage();
+            manager.Navigator.GoToGroupPage();
             return this;
         }
-        public bool AvailabilityOfGroups()
+        public GroupHelper Remove(int index)
         {
-            return IsElementPresent(By.Name("selected[]"));
-        }
-        public GroupHelper Remove(int v)
-        {
-            manager.Navigator.GoToGroupsPage();
-            SelectGroup(v);
+            manager.Navigator.GoToGroupPage();
+            SelectGroup(index);
             RemoveGroup();
-            ReturnToGroupsPage();
+            manager.Navigator.GoToGroupPage();
+
             return this;
         }
-        public GroupHelper CreateNewGroup()
+
+        public bool IsExist(int index)
         {
-            // Create new group
-            driver.FindElement(By.Name("new")).Click();
-            return this;
+            return IsElementPresent(By.XPath("(//input[@name='selected[]'])[" + (index + 1) + "]"));
         }
-        public GroupHelper FillGroupForm(GroupData group)
-        {
-            Type(By.Name("group_name"), group.Name);
-            Type(By.Name("group_header"), group.Header);
-            Type(By.Name("group_footer"), group.Footer);
-            return this;
-        }
+
         public GroupHelper SubmitGroupCreation()
         {
             driver.FindElement(By.Name("submit")).Click();
             return this;
         }
+        public GroupHelper FillGroupForm(GroupData group)
+        {
+            Tipe(By.Name("group_name"), group.Name);
+            Tipe(By.Name("group_header"), group.Header);
+            Tipe(By.Name("group_footer"), group.Footer);
+            return this;
+        }
+
+        public GroupHelper InitNewGroupCreation()
+        {
+            driver.FindElement(By.Name("new")).Click();
+            return this;
+        }
+
         public GroupHelper SelectGroup(int index)
         {
             driver.FindElement(By.XPath("(//input[@name='selected[]'])[" + (index + 1) + "]")).Click();
             return this;
         }
+
         public GroupHelper RemoveGroup()
         {
-            driver.FindElement(By.XPath("(//input[@name='delete'])[2]")).Click();
-            return this;
-        }
-        public GroupHelper ReturnToGroupsPage()
-        {
-            driver.FindElement(By.LinkText("group page")).Click();
+            driver.FindElement(By.Name("delete")).Click();
             return this;
         }
         public GroupHelper SubmitGroupModification()
@@ -94,7 +99,7 @@ namespace WebAdressbookTests
             driver.FindElement(By.Name("update")).Click();
             return this;
         }
-        public GroupHelper InitGroupModification()
+        public GroupHelper InitNewGroupModification()
         {
             driver.FindElement(By.Name("edit")).Click();
             return this;

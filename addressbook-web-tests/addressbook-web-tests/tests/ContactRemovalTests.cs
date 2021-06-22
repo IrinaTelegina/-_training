@@ -1,29 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Text.RegularExpressions;
+using System.Threading;
 using NUnit.Framework;
-
-namespace WebAdressbookTests.tests
+namespace WebAdressbookTests
 {
+    [TestFixture]
     public class ContactRemovalTests : AuthTestBase
     {
-
         [Test]
-        public void GontactRemovealTest()
+        public void ContactRemovalTest()
         {
-            if (app.Contacts.AvailabilityOfContacts() == false)
+            int index = 0;
+            if ((index == 0) && (!app.Contacts.IsExist(index)))
             {
-                ContactData contact = new ContactData("Irina", "Telegina");
-                app.Contacts.AddNewContact(contact);
+                app.Contacts.Create(new PropertiesContact("AutoCreated", "AutoCreated"));
             }
-            List<ContactData> oldContacts = app.Contacts.GetContactsList();
-            app.Contacts.Remove(0);
-            List<ContactData> newContacts = app.Contacts.GetContactsList();
-            oldContacts.RemoveAt(0);
-            oldContacts.Sort();
-            newContacts.Sort();
+
+            //Если удаляем контакт, которого нет, то тест должен провалиться
+            Assert.IsTrue(app.Contacts.IsExist(index));
+
+            List<PropertiesContact> oldContacts = app.Contacts.GetContactList();
+            app.Contacts.Remove(index);
+
+            List<PropertiesContact> newContacts = app.Contacts.GetContactList();
+            oldContacts.RemoveAt(index);
             Assert.AreEqual(oldContacts, newContacts);
         }
     }

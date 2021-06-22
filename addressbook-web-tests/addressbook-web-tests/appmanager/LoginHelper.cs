@@ -5,8 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Firefox;
+using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
-
 namespace WebAdressbookTests
 {
     public class LoginHelper : HelperBase
@@ -15,6 +15,7 @@ namespace WebAdressbookTests
             : base(manager)
         {
         }
+
         public void Login(AccountData account)
         {
             if (IsLoggedIn())
@@ -26,10 +27,20 @@ namespace WebAdressbookTests
 
                 Logout();
             }
-            Type(By.Name("user"), account.Username);
-            Type(By.Name("pass"), account.Password);
+            Tipe(By.Name("user"), account.Username);
+            Tipe(By.Name("pass"), account.Password);
             driver.FindElement(By.XPath("//input[@value='Login']")).Click();
+        }
 
+        public bool IsLoggedIn()
+        {
+            return IsElementPresent(By.Name("logout"));
+        }
+        public bool IsLoggedIn(AccountData account)
+        {
+                   return IsLoggedIn()
+            && driver.FindElement(By.Name("logout")).FindElement(By.TagName("b")).Text
+            == "(" + account.Username + ")"; 
         }
 
         public void Logout()
@@ -41,16 +52,6 @@ namespace WebAdressbookTests
 
         }
 
-        public bool IsLoggedIn()
-        {
-            return IsElementPresent(By.Name("logout"));
-        }
 
-        public bool IsLoggedIn(AccountData account)
-        {
-            return IsLoggedIn()
-                && driver.FindElement(By.Name("logout")).FindElement(By.TagName("b")).Text
-                   == "(" + account.Username + ")";
-        }
     }
 }

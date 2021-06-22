@@ -1,25 +1,30 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using NUnit.Framework;
-using OpenQA.Selenium;
-using OpenQA.Selenium.Firefox;
-using OpenQA.Selenium.Support.UI;
-
-namespace WebAdressbookTests.tests
+namespace WebAdressbookTests
 {
     [TestFixture]
-    public class ContactsCreationTests : AuthTestBase
+    public class ContactCreationtTests : AuthTestBase
     {
         [Test]
-        public void ContactCreationTest()
+        public void ContactCreationtTest()
         {
-            app.Contacts
-                .CreateContact()
-                .NameAndLastname(new ContactData("irina", "telegina"))
-                .SubmitContact();
-            app.Navigator.ReturnToHomePage();
+            PropertiesContact newContact = new PropertiesContact("Irina", "Telegina");
+            List<PropertiesContact> oldContacts = app.Contacts.GetContactList();
+            app.Contacts.Create(newContact);
+
+            List<PropertiesContact> newContacts = app.Contacts.GetContactList();
+            oldContacts.Add(newContact);
+
+            oldContacts.Sort();
+            newContacts.Sort();
+            Assert.AreEqual(oldContacts, newContacts);
+
+
         }
+
     }
 }

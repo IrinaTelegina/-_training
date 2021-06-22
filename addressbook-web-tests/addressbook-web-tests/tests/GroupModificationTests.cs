@@ -4,37 +4,38 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
-
-namespace WebAdressbookTests.tests
+namespace WebAdressbookTests
 {
     [TestFixture]
     public class GroupModificationTests : AuthTestBase
     {
-
         [Test]
         public void GroupModificationTest()
         {
-            if (app.Groups.AvailabilityOfGroups() == false)
-            {
-                GroupData group = new GroupData("newGroup");
-                group.Header = "111";
-                group.Footer = "222";
-                app.Groups.Create(group);
-            }
+            int index = 0;
+
             GroupData newData = new GroupData("zzz");
             newData.Header = null;
             newData.Footer = null;
-            List<GroupData> oldGroups = app.Groups.GetGroupList(); //список групп до добавления новой
+            if ((index == 0) && (!app.Groups.IsExist(index)))
+            {
+                GroupData group = new GroupData("AutoCreated");
+                group.Header = "AutoCreated";
+                group.Footer = "AutoCreated";
+                app.Groups.Create(group);
+            }
+            //Если правим группу, которой нет, то тест должен провалиться
+            Assert.IsTrue(app.Groups.IsExist(index));
 
+            List<GroupData> oldGroups = app.Groups.GetGroupList();
 
-            app.Groups.Modify(0, newData);
+            app.Groups.Modify(index, newData);
+
             List<GroupData> newGroups = app.Groups.GetGroupList();
-            //Список объектов типа GroupData после добавления новой группы
-            oldGroups[0].Name = newData.Name;
+            oldGroups[index].Name = newData.Name;
             oldGroups.Sort();
             newGroups.Sort();
-            Assert.AreEqual(oldGroups, newGroups); //сравнение двух списков
+            Assert.AreEqual(oldGroups, newGroups);
         }
-
     }
 }
