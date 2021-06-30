@@ -99,6 +99,12 @@ namespace WebAdressbookTests
             driver.FindElement(By.Name("update")).Click();
             return this;
         }
+
+        internal int GetGroupCount()
+        {
+            throw new NotImplementedException();
+        }
+
         public GroupHelper InitNewGroupModification()
         {
             driver.FindElement(By.Name("edit")).Click();

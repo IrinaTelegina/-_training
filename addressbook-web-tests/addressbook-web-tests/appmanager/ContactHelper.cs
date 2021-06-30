@@ -13,6 +13,8 @@ namespace WebAdressbookTests
 {
     public class ContactHelper : HelperBase
     {
+        private object contactCache;
+
         public ContactHelper(ApplicationManager manager)
             : base(manager)
         {

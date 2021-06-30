@@ -12,6 +12,11 @@ namespace WebAdressbookTests
         private string header = "";
         private string footer = "";
 
+        public GroupData()
+        {
+
+        }
+
         public GroupData(string name)
         {
             this.name = name;

@@ -18,6 +18,9 @@ namespace WebAdressbookTests
             Firstname = firstname;
             Lastname = lastname;
         }
+        public PropertiesContact()
+        {
+        }
         public string Firstname { get; set; }
 
         public string Lastname { get; set; }
