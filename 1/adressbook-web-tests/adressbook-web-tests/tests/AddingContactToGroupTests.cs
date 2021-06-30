@@ -14,7 +14,6 @@ namespace WebAdressbookTests
         {
             List<GroupData> groups = GroupData.GetAll();
 
-            //Если групп нет, то создадим хотя бы одну
             if (groups.Count < 1)
             {
                 app.Groups.Create(new GroupData("TestGroupAuto"));
