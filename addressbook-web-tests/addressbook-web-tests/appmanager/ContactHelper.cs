@@ -13,7 +13,6 @@ namespace WebAdressbookTests
 {
     public class ContactHelper : HelperBase
     {
-        private object contactCache;
 
         public ContactHelper(ApplicationManager manager)
             : base(manager)
@@ -37,6 +36,31 @@ namespace WebAdressbookTests
                 AllEmails = allEmails
             };
 
+        }
+
+        private List<ContactData> contactCash = null;
+        public List<ContactData> GetContactsList()
+        {
+            if (contactCash == null)
+            {
+                contactCash = new List<ContactData>();
+                manager.Navigator.OpenHomePage();
+                IList<IWebElement> elements = driver.FindElements(By.CssSelector("tr[name=\"entry\"]"));
+                string firstname;
+                string lastname;
+                foreach (IWebElement element in elements)
+                {
+                    IList<IWebElement> cells = element.FindElements(By.CssSelector("td"));
+                    lastname = cells[2].Text;
+                    firstname = cells[1].Text;
+                    contactCash.Add(new ContactData(lastname, firstname)
+                    {
+                        Id = element.FindElement(By.TagName("input")).GetAttribute("value")
+                    });
+                }
+            }
+            List<ContactData> contact = new List<ContactData>();
+            return new List<ContactData>(contactCash);
         }
 
         public PropertiesContact GetContactInformationFromEditForm(int index)
@@ -197,7 +221,9 @@ namespace WebAdressbookTests
         public ContactHelper RemoveContact()
         {
             driver.FindElement(By.XPath("//input[@value='Delete']")).Click();
+            contactCash = null;
             driver.SwitchTo().Alert().Accept();
+            manager.Navigator.OpenHomePage();
             return this;
         }
 
