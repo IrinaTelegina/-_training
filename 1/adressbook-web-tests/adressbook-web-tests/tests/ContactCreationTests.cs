@@ -52,7 +52,6 @@ namespace WebAdressbookTests
             newContacts.Sort();
             Assert.AreEqual(oldContacts, newContacts);
 
-
         }
 
         [Test]

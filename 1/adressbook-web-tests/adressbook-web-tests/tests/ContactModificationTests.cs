@@ -14,7 +14,7 @@ namespace WebAdressbookTests
         public void ContactModificationTest()
         {
             int index = 0;
-            PropertiesContact newData = new PropertiesContact("Dilya3", "Shafigullina3");
+            PropertiesContact newData = new PropertiesContact("Irina3", "Telegina3");
 
             //Если  пользователь пытается удалять первый элемент, а его нет, то мы создадим его
             if ((index == 0) && (!app.Contacts.IsExist(index)))
